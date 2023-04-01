@@ -12870,215 +12870,72 @@
 ];
 
 let Picker = (function (){
-	function Picker($original){
-		this.$original = $original;
-		this.$main = $(`
-		<div style="position: fixed; top: 0px; left: 0px; width: ${$(window).width()}px; height: ${$(window). height()}px; background-color: #00000044">
-		<div style="position: relative; width: ${$(window).width()-20}px; height: ${$(window). height()-20}px;margin: 10px; background-color: #fefefe;">
-		<select style="position: absolute; width: 90px; height: 30px; top: 10px; left: 10px;">
-		<option value="all" selected>All Categories</option>
-		<option value="serif">Serif</option>
-		<option value="sans-serif">Sans-Serif</option>
-		<option value="display">Display</option>
-		<option value="handwriting">Handwriting</option>
-		<option value="monospace">Monospace</option>
-		</select>
-		<select style="position: absolute; width: 90px; height: 30px; top: 10px; left: 100px;">
-		<option value="all" selected>All languages</option>
-		<option value="adlam">Adlam</option>
-<option value="ahom">Ahom</option>
-<option value="anatolian-hieroglyphs">Anatolian-hieroglyphs</option>
-<option value="arabic">Arabic</option>
-<option value="armenian">Armenian</option>
-<option value="avestan">Avestan</option>
-<option value="balinese">Balinese</option>
-<option value="bamum">Bamum</option>
-<option value="bassa-vah">Bassa-vah</option>
-<option value="batak">Batak</option>
-<option value="bengali">Bengali</option>
-<option value="bhaiksuki">Bhaiksuki</option>
-<option value="brahmi">Brahmi</option>
-<option value="buginese">Buginese</option>
-<option value="buhid">Buhid</option>
-<option value="canadian-aboriginal">Canadian-aboriginal</option>
-<option value="carian">Carian</option>
-<option value="caucasian-albanian">Caucasian-albanian</option>
-<option value="chakma">Chakma</option>
-<option value="cham">Cham</option>
-<option value="cherokee">Cherokee</option>
-<option value="chinese-hongkong">Chinese-hongkong</option>
-<option value="chinese-simplified">Chinese-simplified</option>
-<option value="chinese-traditional">Chinese-traditional</option>
-<option value="coptic">Coptic</option>
-<option value="cuneiform">Cuneiform</option>
-<option value="cypriot">Cypriot</option>
-<option value="cyrillic">Cyrillic</option>
-<option value="cyrillic-ext">Cyrillic-ext</option>
-<option value="deseret">Deseret</option>
-<option value="devanagari">Devanagari</option>
-<option value="dogra">Dogra</option>
-<option value="duployan">Duployan</option>
-<option value="egyptian-hieroglyphs">Egyptian-hieroglyphs</option>
-<option value="elbasan">Elbasan</option>
-<option value="elymaic">Elymaic</option>
-<option value="emoji">Emoji</option>
-<option value="ethiopic">Ethiopic</option>
-<option value="georgian">Georgian</option>
-<option value="glagolitic">Glagolitic</option>
-<option value="gothic">Gothic</option>
-<option value="grantha">Grantha</option>
-<option value="greek">Greek</option>
-<option value="greek-ext">Greek-ext</option>
-<option value="gujarati">Gujarati</option>
-<option value="gunjala-gondi">Gunjala-gondi</option>
-<option value="gurmukhi">Gurmukhi</option>
-<option value="hanifi-rohingya">Hanifi-rohingya</option>
-<option value="hanunoo">Hanunoo</option>
-<option value="hatran">Hatran</option>
-<option value="hebrew">Hebrew</option>
-<option value="imperial-aramaic">Imperial-aramaic</option>
-<option value="indic-siyaq-numbers">Indic-siyaq-numbers</option>
-<option value="inscriptional-pahlavi">Inscriptional-pahlavi</option>
-<option value="inscriptional-parthian">Inscriptional-parthian</option>
-<option value="japanese">Japanese</option>
-<option value="javanese">Javanese</option>
-<option value="kaithi">Kaithi</option>
-<option value="kannada">Kannada</option>
-<option value="kayah-li">Kayah-li</option>
-<option value="kharoshthi">Kharoshthi</option>
-<option value="khmer">Khmer</option>
-<option value="khojki">Khojki</option>
-<option value="khudawadi">Khudawadi</option>
-<option value="korean">Korean</option>
-<option value="lao">Lao</option>
-<option value="latin">Latin</option>
-<option value="latin-ext">Latin-ext</option>
-<option value="lepcha">Lepcha</option>
-<option value="limbu">Limbu</option>
-<option value="linear-a">Linear-a</option>
-<option value="linear-b">Linear-b</option>
-<option value="lisu">Lisu</option>
-<option value="lycian">Lycian</option>
-<option value="lydian">Lydian</option>
-<option value="mahajani">Mahajani</option>
-<option value="malayalam">Malayalam</option>
-<option value="mandaic">Mandaic</option>
-<option value="manichaean">Manichaean</option>
-<option value="marchen">Marchen</option>
-<option value="masaram-gondi">Masaram-gondi</option>
-<option value="math">Math</option>
-<option value="mayan-numerals">Mayan-numerals</option>
-<option value="medefaidrin">Medefaidrin</option>
-<option value="meetei-mayek">Meetei-mayek</option>
-<option value="mende-kikakui">Mende-kikakui</option>
-<option value="meroitic">Meroitic</option>
-<option value="miao">Miao</option>
-<option value="modi">Modi</option>
-<option value="mongolian">Mongolian</option>
-<option value="mro">Mro</option>
-<option value="multani">Multani</option>
-<option value="music">Music</option>
-<option value="myanmar">Myanmar</option>
-<option value="nabataean">Nabataean</option>
-<option value="new-tai-lue">New-tai-lue</option>
-<option value="newa">Newa</option>
-<option value="nko">Nko</option>
-<option value="nushu">Nushu</option>
-<option value="nyiakeng-puachue-hmong">Nyiakeng-puachue-hmong</option>
-<option value="ogham">Ogham</option>
-<option value="ol-chiki">Ol-chiki</option>
-<option value="old-hungarian">Old-hungarian</option>
-<option value="old-italic">Old-italic</option>
-<option value="old-north-arabian">Old-north-arabian</option>
-<option value="old-permic">Old-permic</option>
-<option value="old-persian">Old-persian</option>
-<option value="old-sogdian">Old-sogdian</option>
-<option value="old-south-arabian">Old-south-arabian</option>
-<option value="old-turkic">Old-turkic</option>
-<option value="oriya">Oriya</option>
-<option value="osage">Osage</option>
-<option value="osmanya">Osmanya</option>
-<option value="pahawh-hmong">Pahawh-hmong</option>
-<option value="palmyrene">Palmyrene</option>
-<option value="pau-cin-hau">Pau-cin-hau</option>
-<option value="phags-pa">Phags-pa</option>
-<option value="phoenician">Phoenician</option>
-<option value="psalter-pahlavi">Psalter-pahlavi</option>
-<option value="rejang">Rejang</option>
-<option value="runic">Runic</option>
-<option value="samaritan">Samaritan</option>
-<option value="saurashtra">Saurashtra</option>
-<option value="sharada">Sharada</option>
-<option value="shavian">Shavian</option>
-<option value="siddham">Siddham</option>
-<option value="signwriting">Signwriting</option>
-<option value="sinhala">Sinhala</option>
-<option value="sogdian">Sogdian</option>
-<option value="sora-sompeng">Sora-sompeng</option>
-<option value="soyombo">Soyombo</option>
-<option value="sundanese">Sundanese</option>
-<option value="syloti-nagri">Syloti-nagri</option>
-<option value="symbols">Symbols</option>
-<option value="syriac">Syriac</option>
-<option value="tagalog">Tagalog</option>
-<option value="tagbanwa">Tagbanwa</option>
-<option value="tai-le">Tai-le</option>
-<option value="tai-tham">Tai-tham</option>
-<option value="tai-viet">Tai-viet</option>
-<option value="takri">Takri</option>
-<option value="tamil">Tamil</option>
-<option value="tamil-supplement">Tamil-supplement</option>
-<option value="tangsa">Tangsa</option>
-<option value="tangut">Tangut</option>
-<option value="telugu">Telugu</option>
-<option value="thaana">Thaana</option>
-<option value="thai">Thai</option>
-<option value="tibetan">Tibetan</option>
-<option value="tifinagh">Tifinagh</option>
-<option value="tirhuta">Tirhuta</option>
-<option value="toto">Toto</option>
-<option value="ugaritic">Ugaritic</option>
-<option value="vai">Vai</option>
-<option value="vietnamese">Vietnamese</option>
-<option value="wancho">Wancho</option>
-<option value="warang-citi">Warang-citi</option>
-<option value="yezidi">Yezidi</option>
-<option value="yi">Yi</option>
-<option value="zanabazar-square">Zanabazar-square</option>
-		</select>
-		<input type="text" placeholder="Search font..." style="position: absolute; width: ${$(window).width()-220}px; height: 30px; top: 10px; left: 190px; padding: 0px 10px" />
-		<input type="button" value="Previous" style="position: absolute; width: 90px; height: 30px; bottom: 10px; left: 10px;"/>
-		<input type="button" value="Next" style="position: absolute; width: 90px; height: 30px; bottom: 10px; left: 100px;"/>
-		<input type="button" value="Cancel" style="position: absolute; width: 90px; height: 30px; bottom: 10px; right: 10px;"/>
-		<div class="list" style="position: absolute; width: ${$(window).width()-40}px; height: ${$(window). height()-120}px; top: 50px; left: 10px; overflow-y: scroll">
+	function Picker(original){
+		this.$original = $(original);
+		this.$main = $("<div />");
+		this.$wrap = $("<div />");
+		this.$category = $("<select />");
+		this.$subset = $("<select />");
+		this.$query = $("<input />");
+		this.$prev = $("<input />");
+		this.$next = $("<input />");
+		this.$cancel = $("<input />");
+		this.$list = $("<div />");
 		
-		</div>
-		</div>
-		</div>
-		`);
 		this.initialize();
-		this.$category = this.$main.find("select").eq(0);
-		this.$subset = this.$main.find("select").eq(1);
-		this.$query = this.$main.find("input[type=text]").eq(0);
-		this.$prev = this.$main.find("input[type=button]").eq(0);
-		this.$next = this.$main.find("input[type=button]").eq(1);
-		this.$cancel = this.$main.find("input[type=button]").eq(2);
-		this.$list = this.$main.find("div.list").eq(0);
-		
-		this.input();
+		this.event();
 		}
 	Picker.prototype = {
 		data: [],
 		page: 0,
 		pagelast: 0,
 		initialize: function (){
-			this.$main.css({display: "none"});
-			this.$original.after(this.$main);
+			this.$main.hide();
+			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).insertAfter(this.$original);
+			this.$wrap.css({position: `relative`, width: `${$(window).width()-20}px`, height: `${$(window). height()-20}px`,margin: `10px`, backgroundColor: `#fefefe`}).appendTo(this.$main);
+			this.$category.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `10px`}).html(function (){
+				let category= [];
+				$.each(data, function (i, v){
+					if(!category.includes(v.category)){
+						category.push(v.category);
+						}
+					});
+				category.sort();
+				category.unshift("all");
+				let html = ``;
+				$.each(category, function (i, v){
+					html += `<option value="${v}">${String(v).charAt(0).toUpperCase() + String(v).slice(1)}</option>`;
+					});
+				return html;
+				}).appendTo(this.$wrap);
+			this.$subset.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `100px`}).html(function (){
+				let subset= [];
+				$.each(data, function (i, v){
+					$.each(v.subsets, function (j, w){
+						if(!subset.includes(w)){
+							subset.push(w);
+							}
+						});
+					});
+				subset.sort();
+				subset.unshift("all");
+				let html = ``;
+				$.each(subset, function (i, v){
+					html += `<option value="${v}">${String(v).charAt(0).toUpperCase() + String(v).slice(1)}</option>`;
+					});
+				return html;
+				}).appendTo(this.$wrap);
+			this.$query.attr({type: `text`, placeholder: `Search font...`}).css({position: `absolute`, width: `${$(window).width()-220}px`, height: `30px`, top: `10px`, left: `190px`, padding: `0px 10px`}).appendTo(this.$wrap);
+			this.$prev.attr({type: `button`, value: `Prev`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, left: `10px`}).appendTo(this.$wrap);
+			this.$next.attr({type: `button`, value: `Next`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, left: `100px`}).appendTo(this.$wrap);
+			this.$cancel.attr({type: `button`, value: `Cancel`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, right: `10px`}).appendTo(this.$wrap);
+			this.$list.css({position: `absolute`, width: `${$(window).width()-40}px`, height: `${$(window). height()-120}px`, top: `50px`, left: `10px`, overflowY: `scroll`}).appendTo(this.$wrap);
 			},
-		input: function (){
+		event: function (){
+			let picker = this;
 			let ti = undefined;
 			this.$original.on("click", function (){
-				picker.$main.css({display: "block"});
+				picker.$main.show();
 				picker.search();
 				});
 			this.$category.on("change", function (){
@@ -13103,11 +12960,12 @@ let Picker = (function (){
 				picker.render();
 				});
 			this.$cancel.on("click", function (){
-				picker.$main.css({display: "none"});
+				picker.$main.hide();
 				});
 			
 			},
 		render: function (){
+			let picker = this;
 			let dataslice = this.data.slice(this.page*25, this.page*25+25);
 			(this.page==0)?this.$prev.attr("disabled", true):this.$prev.removeAttr("disabled");
 			(this.page==this.pagelast)?this.$next.attr("disabled", true):this.$next.removeAttr("disabled");
@@ -13123,6 +12981,7 @@ let Picker = (function (){
 			
 			},
 		search: function (){
+			let picker = this;
 			let category = this.$category.val();
 			let subset = this.$subset.val();
 			let query = this.$query.val();
@@ -13159,7 +13018,9 @@ let Picker = (function (){
 		}
 		return Picker;
 	})();
-        let picker = new Picker(this);
-        return this;
+        
+        return this.each(function (){
+        	new Picker(this);
+        	});
     };
 })(jQuery);
