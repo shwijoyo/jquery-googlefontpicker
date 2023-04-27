@@ -12890,8 +12890,7 @@ let Picker = (function (){
 		page: 0,
 		pagelast: 0,
 		initialize: function (){
-			this.$main.hide();
-			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).insertAfter(this.$original);
+			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).insertAfter(this.$original).hide();
 			this.$wrap.css({position: `relative`, width: `${$(window).width()-20}px`, height: `${$(window). height()-20}px`,margin: `10px`, backgroundColor: `#fefefe`}).appendTo(this.$main);
 			this.$category.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `10px`}).html(function (){
 				let category= [];
@@ -12971,12 +12970,18 @@ let Picker = (function (){
 			(this.page==this.pagelast)?this.$next.attr("disabled", true):this.$next.removeAttr("disabled");
 			this.$list.html(``);
 			$.each(dataslice, function (i, v){
-				$("head").append(`<link href="https://fonts.googleapis.com/css2?family=${String(v.family).replace(/ /g, '+')}&display=swap" rel="stylesheet" />`);
-				picker.$list.append($(`<input class="item" type="button" style="width: 100%; padding: 10px; font-size: 25px; font-family:'${v.family}'" value="${v.family}"/>`).data(v).on("click", function (){
-				picker.$original.val(this.value).css({fontFamily:`${this.value}`});
-				callback($(this).data());
-				picker.$main.css({display: "none"});
-				}));
+				let src = `https://fonts.googleapis.com/css2?family=${String(v.family).replace(/ /g, '+')}&display=swap`;
+				if(!$(`link[href="${src}"]`).length){
+					$(`<link />`).attr({href:`${src}`, rel: `stylesheet`}).appendTo($("head"));
+					}
+				
+				$(`<input />`).attr({type: `button`, value: `${v.family}`}).css({width: `100%`, padding: `10px`, fontSize: `25px`, fontFamily: `${v.family}`}).on("click", function (){
+					v.src = `${src}`;
+					picker.$original.val(this.value).css({fontFamily:`${this.value}`});
+					picker.$main.hide();
+					console.log(v);
+					}).appendTo(picker.$list);
+				
 				});
 			
 			},
