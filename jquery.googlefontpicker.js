@@ -12890,7 +12890,7 @@ let Picker = (function (){
 		page: 0,
 		pagelast: 0,
 		initialize: function (){
-			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).insertAfter(this.$original).hide();
+			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).appendTo($(`body`)).hide();
 			this.$wrap.css({position: `relative`, width: `${$(window).width()-20}px`, height: `${$(window). height()-20}px`,margin: `10px`, backgroundColor: `#fefefe`}).appendTo(this.$main);
 			this.$category.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `10px`}).html(function (){
 				let category= [];
