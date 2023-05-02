@@ -12979,7 +12979,7 @@ let Picker = (function (){
 					v.src = `${src}`;
 					picker.$original.val(this.value).css({fontFamily:`${this.value}`});
 					picker.$main.hide();
-					console.log(v);
+					callback(v);
 					}).appendTo(picker.$list);
 				
 				});
