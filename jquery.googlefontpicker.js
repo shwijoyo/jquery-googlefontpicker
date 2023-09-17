@@ -1,6 +1,5 @@
 (function ($) {
-    $.fn.googlefontpicker = function (callback = function (font){}) {
-        let data = [
+        let googlefont = [
 	{
 		family: "ABeeZee",
 		category: "sans-serif",
@@ -12868,164 +12867,240 @@
 		]
 	}
 ];
-
-let Picker = (function (){
-	function Picker(original){
-		this.$original = $(original);
-		this.$main = $("<div />");
-		this.$wrap = $("<div />");
-		this.$category = $("<select />");
-		this.$subset = $("<select />");
-		this.$query = $("<input />");
-		this.$prev = $("<input />");
-		this.$next = $("<input />");
-		this.$cancel = $("<input />");
-		this.$list = $("<div />");
-		
-		this.initialize();
-		this.event();
-		}
-	Picker.prototype = {
-		data: [],
-		page: 0,
-		pagelast: 0,
-		initialize: function (){
-			this.$main.css({position: `fixed`, top: `0px`, left: `0px`, width: `${$(window).width()}px`, height: `${$(window). height()}px`, backgroundColor: `#00000044`}).appendTo($(`body`)).hide();
-			this.$wrap.css({position: `relative`, width: `${$(window).width()-20}px`, height: `${$(window). height()-20}px`,margin: `10px`, backgroundColor: `#fefefe`}).appendTo(this.$main);
-			this.$category.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `10px`}).html(function (){
-				let category= [];
-				$.each(data, function (i, v){
-					if(!category.includes(v.category)){
-						category.push(v.category);
-						}
-					});
-				category.sort();
-				category.unshift("all");
-				let html = ``;
-				$.each(category, function (i, v){
-					html += `<option value="${v}">${String(v).charAt(0).toUpperCase() + String(v).slice(1)}</option>`;
-					});
-				return html;
-				}).appendTo(this.$wrap);
-			this.$subset.css({position: `absolute`, width: `90px`, height: `30px`, top: `10px`, left: `100px`}).html(function (){
-				let subset= [];
-				$.each(data, function (i, v){
-					$.each(v.subsets, function (j, w){
-						if(!subset.includes(w)){
-							subset.push(w);
-							}
-						});
-					});
-				subset.sort();
-				subset.unshift("all");
-				let html = ``;
-				$.each(subset, function (i, v){
-					html += `<option value="${v}">${String(v).charAt(0).toUpperCase() + String(v).slice(1)}</option>`;
-					});
-				return html;
-				}).appendTo(this.$wrap);
-			this.$query.attr({type: `text`, placeholder: `Search font...`}).css({position: `absolute`, width: `${$(window).width()-220}px`, height: `30px`, top: `10px`, left: `190px`, padding: `0px 10px`}).appendTo(this.$wrap);
-			this.$prev.attr({type: `button`, value: `Prev`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, left: `10px`}).appendTo(this.$wrap);
-			this.$next.attr({type: `button`, value: `Next`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, left: `100px`}).appendTo(this.$wrap);
-			this.$cancel.attr({type: `button`, value: `Cancel`}).css({position: `absolute`, width: `90px`, height: `30px`, bottom: `10px`, right: `10px`}).appendTo(this.$wrap);
-			this.$list.css({position: `absolute`, width: `${$(window).width()-40}px`, height: `${$(window). height()-120}px`, top: `50px`, left: `10px`, overflowY: `scroll`}).appendTo(this.$wrap);
-			},
-		event: function (){
-			let picker = this;
-			let ti = undefined;
-			this.$original.on("click", function (){
-				picker.$main.show();
-				picker.search();
-				});
-			this.$category.on("change", function (){
-				picker.search();
-				});
-			this.$subset.on("change", function (){
-				picker.search();
-				});
-			this.$query.on("input", function (){
-				clearTimeout(ti);
-				ti = setTimeout(function (){
-					picker.search();
-					}, 2000);
-				
-				});
-			this.$prev.on("click", function (){
-				picker.page -= 1;
-				picker.render();
-				});
-			this.$next.on("click", function (){
-				picker.page += 1;
-				picker.render();
-				});
-			this.$cancel.on("click", function (){
-				picker.$main.hide();
-				});
-			
-			},
-		render: function (){
-			let picker = this;
-			let dataslice = this.data.slice(this.page*25, this.page*25+25);
-			(this.page==0)?this.$prev.attr("disabled", true):this.$prev.removeAttr("disabled");
-			(this.page==this.pagelast)?this.$next.attr("disabled", true):this.$next.removeAttr("disabled");
-			this.$list.html(``);
-			$.each(dataslice, function (i, v){
-				let src = `https://fonts.googleapis.com/css2?family=${String(v.family).replace(/ /g, '+')}&display=swap`;
-				if(!$(`link[href="${src}"]`).length){
-					$(`<link />`).attr({href:`${src}`, rel: `stylesheet`}).appendTo($("head"));
-					}
-				
-				$(`<input />`).attr({type: `button`, value: `${v.family}`}).css({width: `100%`, padding: `10px`, fontSize: `25px`, fontFamily: `${v.family}`}).on("click", function (){
-					v.src = `${src}`;
-					picker.$original.val(this.value).css({fontFamily:`${this.value}`});
-					picker.$main.hide();
-					callback(v);
-					}).appendTo(picker.$list);
-				
-				});
-			
-			},
-		search: function (){
-			let picker = this;
-			let category = this.$category.val();
-			let subset = this.$subset.val();
-			let query = this.$query.val();
-			let datasortcategory = [];
-			$.each(data, function (i,v){
-				if(v.category == category){
-					datasortcategory.push(v);
-					}
-				if(category == "all"){
-					datasortcategory.push(v);
-					}
-				});
-			let datasortsubset = [];
-			$.each(datasortcategory, function (i,v){
-				if(v.subsets.includes(subset)){
-					datasortsubset.push(v);
-					}
-				if(subset == "all"){
-					datasortsubset.push(v);
-					}
-				});
-			let datasortquery = [];
-			$.each(datasortsubset, function (i,v){
-				if(String(v.family).toLowerCase().includes(String(query).toLowerCase())){
-					datasortquery.push(v);
-					}
-				});
-			picker.data = datasortquery;
-			this.page = 0;
-			this.pagelast = ((picker.data.length+(25-(picker.data.length%25)))/25)-1;
-			this.render();
-			
+$.fn.googlefontpicker = function (options) {
+	let settings = $.extend({
+		pageat: 0,
+		category: ["display", "handwriting", "monospace", "sans-serif", "serif"],
+		sort: "a-z",
+		subset: "all",
+		search: "",
+		onPick: function (ff){
+			console.log(ff);
 			}
+		}, options);
+	$(this).attr({
+		"placeholder":($(this).attr('placeholder')!=undefined)?$(this).attr('placeholder'):"Select font",
+		"data-bs-toggle":"modal",
+		"data-bs-target":`#${$(this).attr('id')}-modal`
+		});
+	$("body").append(`
+	<div class="modal fade" id="${$(this).attr('id')}-modal" tabindex="-1" aria-labelledby="${$(this).attr('id')}-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">${$(this).attr('placeholder')}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group mb-1">
+  <input type="text" class="form-control" placeholder="Search font">
+  
+</div>
+<div class="input-group input-group-sm mb-3">
+
+<select class="form-select category" multiple>
+</select>
+<select class="form-select sort">
+  <option value="a-z">A-Z</option>
+  <option value="z-a">Z-A</option>
+  <option value="recently">recently</option>
+</select>
+  <select class="form-select subset">
+  
+</select>
+</div>
+
+<div class="list-group"></div>
+      </div>
+      
+      <div class="modal-footer">
+ <nav>
+  <ul class="pagination pagination-sm">
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    
+    <li class="page-item"><a class="page-link">...</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+</div>
+	`);
+	let $list = $(`#${$(this).attr("id")}-modal`).find(".list-group");
+	let $category = $(`#${$(this).attr("id")}-modal`).find(".category");
+	let $sort = $(`#${$(this).attr("id")}-modal`).find(".sort");
+	let $subset = $(`#${$(this).attr("id")}-modal`).find(".subset");
+	let $search = $(`#${$(this).attr("id")}-modal`).find("input.form-control[type='text']");
+	let $pagination = $(`#${$(this).attr("id")}-modal`).find(".pagination");
+	let category= [];
+	$.each(googlefont, function (i, v){
+		if(!category.includes(v.category)){
+			category.push(v.category);
+			}
+		});
+	category.sort();
+	$.each(category, (i, v)=>{
+		
+		$category.append(`<option value="${v}" selected>${v}</option>`);
+		});
+	
+	let subset= [];
+	$.each(googlefont, function (i, v){
+		$.each(v.subsets, function (j, w){
+			if(!subset.includes(w)){
+				subset.push(w);
+				}
+			});
+		});
+	subset.sort();
+	subset.unshift("all");
+	$.each(subset, (i, v)=>{
+		$subset.append(`<option value="${v}" ${(v=="all")?'selected':''}>${v}</option>`);
+		});
+	let render = ()=>{
+		let data = JSON.parse(`${JSON.stringify(googlefont)}`);
+		let arr = [];
+		switch (settings.sort){
+			case 'z-a':
+			    data.reverse();
+			    break;
+			case 'recently':
+			console.log(localStorage.getItem(`#${$(this).attr("id")}-modal`));
+			    if(localStorage.getItem(`#${$(this).attr("id")}-modal`) != null){
+				data = JSON.parse(localStorage.getItem(`#${$(this).attr("id")}-modal`));
+				
+				}
+			    break;
+			}
+		arr = [];
+			$.each(data, (i,v)=>{
+				if(String(v.family).toLowerCase().includes(String(settings.search).toLowerCase())){
+					arr.push(v);
+					}
+				});
+		data = arr;
+		arr = [];
+		$.each(data, (i, v)=>{
+			if(settings.category.includes(v.category)){
+				arr.push(v);
+				}
+			});
+		data = arr;
+		arr = [];
+			$.each(data, (i,v)=>{
+				if(v.subsets.includes(settings.subset)){
+					arr.push(v);
+					}
+				if(settings.subset == "all"){
+					arr.push(v);
+					}
+				});
+		
+		data = arr;
+		
+		let datashow = data.slice(settings.pageat*24, settings.pageat*24+24);
+		$list.empty();
+		$.each(datashow, (i, v)=>{
+			let src = `https://fonts.googleapis.com/css2?family=${String(v.family).replace(/ /g, '+')}&display=swap`;
+			if(!$(`link[href="${src}"]`).length){
+				$(`<link />`).attr({href:`${src}`, rel: `stylesheet`}).appendTo($("head"));
+				}
+			$list.append(`<button type="button" class="list-group-item list-group-item-action" style="font-family: ${v.family}" value="${v.family}" data-bs-dismiss="modal" data-object='${JSON.stringify(v)}'>${v.family}</button>`);
+			});
+		
+		let pagelast = (data.length+ (24 - (data.length % 24))) / 24 - 1;
+		$pagination.empty();
+                if (pagelast <= 4) {
+                    for (var i = 0; i <= pagelast; i++) {
+                        $pagination.append(`<li class="page-item"><button class="page-link ${(settings.pageat==i)?'active':''}" value="${i}">${i+1}</button></li>`);
+                    }
+                }
+                else {
+                    if (settings.pageat < 4) {
+                        for (var i = 0; i < 5; i++) {
+                            $pagination.append(`<li class="page-item"><button class="page-link ${(settings.pageat==i)?'active':''}" value="${i}">${i+1}</button></li>`);
+                        }
+                        $pagination.append(`<li class="page-item"><button class="page-link" value="${pagelast}">&raquo; ${pagelast+1}</button></li>`);
+                    } else if (settings.pageat >= pagelast - 3) {
+                        $pagination.append(`<li class="page-item"><button class="page-link" value="1">1 &laquo;</button></li>`);
+                        for (var i = pagelast - 4; i <= pagelast; i++) {
+                            $pagination.append(`<li class="page-item"><button class="page-link ${(settings.pageat==i)?'active':''}" value="${i}">${i+1}</button></li>`);
+                        }
+                    } else {
+                        $pagination.append(`<li class="page-item"><button class="page-link" value="1">1 &laquo;</button></li>`);
+
+                        for (var i = settings.pageat - 2; i < settings.pageat + 3; i++) {
+                            $pagination.append(`<li class="page-item"><button class="page-link ${(settings.pageat==i)?'active':''}" value="${i}">${i+1}</button></li>`);
+                        }
+
+                        $pagination.append(`<li class="page-item"><button class="page-link" value="${pagelast}">&raquo; ${pagelast+1}</button></li>`);
+                    }
+                }
+            
+         $(`#${$(this).attr("id")}-modal`).find(".page-link").on("click", function (){
+         	settings.pageat = Number(this.value);
+             render();
+         });
+         let $this = this;
+         $(`#${$(this).attr("id")}-modal`).find("button.list-group-item").on("click", function (){
+         	let recently = [];
+             let datanew = JSON.parse(this.getAttribute("data-object"));
+             
+             if(localStorage.getItem(`#${$this.attr("id")}-modal`) != null){
+				recently = JSON.parse(localStorage.getItem(`#${$this.attr("id")}-modal`));
+				}
+			arr = [];
+			let dataold = [];
+			$.each(recently, (i, v)=>{
+				if(!arr.includes(v.family) && v.family != this.value){
+					dataold.push(v);
+					}
+				});
+			
+			recently = dataold;
+			recently.unshift(datanew);
+			localStorage.setItem(`#${$this.attr("id")}-modal`, JSON.stringify(recently));
+             $this.css({fontFamily: this.value}).val(this.value);
+             settings.onPick(datanew.family);
+         });
 		}
-		return Picker;
-	})();
-        
-        return this.each(function (){
-        	new Picker(this);
-        	});
+	$category.on("change", function (){
+		settings.pageat = 0;
+		settings.category = $category.val();
+		console.log(settings.category);
+		render();
+		});
+	$sort.on("change", function (){
+		settings.pageat = 0;
+		settings.sort = $sort.val();
+		render();
+		});
+	$subset.on("change", function (){
+		settings.pageat = 0;
+		settings.subset = $subset.val();
+		render();
+		});
+	let ti = undefined;
+	$search.on("input", function (){
+		
+		settings.pageat = 0;
+		clearTimeout(ti);
+		ti = setTimeout(()=>{
+			settings.search = $search.val();
+		    render();
+			}, 1500);
+		});
+	render();
+	return this;
     };
 })(jQuery);
